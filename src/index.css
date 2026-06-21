@@ -54,7 +54,7 @@ body {
 
 .role-card h2 {
   margin: 0 0 0.5rem;
-  color: #2d4ea3;
+  color: #2952b3;
 }
 
 .role-card p {
@@ -66,7 +66,7 @@ body {
 .back-link {
   display: inline-block;
   margin-bottom: 1rem;
-  color: #2d4ea3;
+  color: #2952b3;
   text-decoration: none;
 }
 
@@ -115,7 +115,7 @@ body {
 
 button {
   cursor: pointer;
-  background: #2d4ea3;
+  background: #2952b3;
   color: white;
   border: none;
   border-radius: 8px;
@@ -124,7 +124,7 @@ button {
 }
 
 button:hover {
-  background: #233f87;
+  background: #1f3a82;
 }
 
 .link-button {
@@ -142,7 +142,7 @@ button:hover {
 
 .status {
   font-size: 0.9rem;
-  color: #2d4ea3;
+  color: #2952b3;
 }
 
 .hint {
@@ -189,8 +189,8 @@ button:hover {
 }
 
 .tabs a.active {
-  color: #2d4ea3;
-  border-bottom-color: #2d4ea3;
+  color: #2952b3;
+  border-bottom-color: #2952b3;
 }
 
 .team-grid {
