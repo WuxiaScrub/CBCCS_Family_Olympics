@@ -10,6 +10,7 @@ export default function StationLeader() {
   const [stationId, setStationId] = useState('')
   const [teamId, setTeamId] = useState('')
   const [value, setValue] = useState('')
+  const [spiritPoints, setSpiritPoints] = useState('')
   const [recordedBy, setRecordedBy] = useState('')
   const [status, setStatus] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -39,6 +40,14 @@ export default function StationLeader() {
       .then(({ data }) => setScores(data ?? []))
   }, [stationId])
 
+  // Prefill the form with the team's existing entry at this station, if any,
+  // so leaders can see/correct what's already been recorded.
+  useEffect(() => {
+    const existing = scores.find((s) => s.team_id === teamId)
+    setValue(existing ? String(existing.value) : '')
+    setSpiritPoints(existing ? String(existing.spirit_points) : '')
+  }, [teamId, scores])
+
   const station = stations.find((s) => s.id === stationId)
 
   async function submitScore(e: React.FormEvent) {
@@ -50,6 +59,7 @@ export default function StationLeader() {
         station_id: stationId,
         team_id: teamId,
         value: Number(value),
+        spirit_points: spiritPoints === '' ? 0 : Number(spiritPoints),
         recorded_by: recordedBy || null,
       },
       { onConflict: 'station_id,team_id' },
@@ -59,7 +69,6 @@ export default function StationLeader() {
       return
     }
     setStatus('Saved!')
-    setValue('')
     const { data } = await supabase
       .from('scores')
       .select('*')
@@ -123,6 +132,18 @@ export default function StationLeader() {
             </label>
 
             <label className="field">
+              Spirit Points
+              <input
+                type="number"
+                step="any"
+                min="0"
+                value={spiritPoints}
+                onChange={(e) => setSpiritPoints(e.target.value)}
+                placeholder="e.g. 5"
+              />
+            </label>
+
+            <label className="field">
               Your name (optional)
               <input
                 type="text"
@@ -144,6 +165,7 @@ export default function StationLeader() {
                 <tr>
                   <th>Team</th>
                   <th>{station?.scoring_type === 'time' ? 'Time' : 'Score'}</th>
+                  <th>Spirit Points</th>
                 </tr>
               </thead>
               <tbody>
@@ -151,13 +173,14 @@ export default function StationLeader() {
                   <tr key={s.id}>
                     <td>{teamName(s.team_id)}</td>
                     <td>{s.value}</td>
+                    <td>{s.spirit_points}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           )}
           <p className="hint">
-            Tip: re-submitting a score for the same team updates their existing entry.
+            Tip: selecting a team that already has an entry loads it for editing — re-submitting updates it.
           </p>
         </>
       )}

@@ -27,21 +27,22 @@ export interface Score {
   station_id: string
   team_id: string
   value: number
+  spirit_points: number
   recorded_by: string | null
   recorded_at: string
 }
 
-export interface LeaderboardRow {
+export interface SpiritLeaderboardRow {
   team_id: string
   team_name: string
-  total_points: number
+  total_spirit_points: number
 }
 
-export interface StationPointsRow {
+export interface StationRankingRow {
   score_id: string
   station_id: string
   team_id: string
   value: number
+  spirit_points: number
   place: number
-  points: number
 }

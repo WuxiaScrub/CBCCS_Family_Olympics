@@ -23,50 +23,47 @@ create table stations (
   created_at timestamptz not null default now()
 );
 
+-- Each event/station is scored independently of the others (no combined
+-- overall score). Spirit points are the one exception: every station leader
+-- also records a spirit point value per team, and those are summed across
+-- all stations for a separate Spirit Award.
 create table scores (
   id uuid primary key default gen_random_uuid(),
   station_id uuid not null references stations(id) on delete cascade,
   team_id uuid not null references teams(id) on delete cascade,
   value numeric not null,
+  spirit_points numeric not null default 0,
   recorded_by text,
   recorded_at timestamptz not null default now(),
   unique (station_id, team_id)
 );
 
--- Per-station ranking of the latest score for each team, with placement points
--- awarded: 1st = 5, 2nd = 3, 3rd = 1, everyone else = 0.
-create or replace view station_points as
+-- Per-station placement, for display only (e.g. "Team X won the sack race").
+-- This does not feed into any overall/combined score.
+create or replace view station_rankings as
 select
   s.id as score_id,
   s.station_id,
   s.team_id,
   s.value,
+  s.spirit_points,
   rank() over (
     partition by s.station_id
     order by case when st.direction = 'asc' then s.value else -s.value end
-  ) as place,
-  case rank() over (
-    partition by s.station_id
-    order by case when st.direction = 'asc' then s.value else -s.value end
-  )
-    when 1 then 5
-    when 2 then 3
-    when 3 then 1
-    else 0
-  end as points
+  ) as place
 from scores s
 join stations st on st.id = s.station_id;
 
--- Total points per team across all stations.
-create or replace view leaderboard as
+-- Spirit Award: total spirit points per team, summed across every station.
+create or replace view spirit_leaderboard as
 select
   t.id as team_id,
   t.name as team_name,
-  coalesce(sum(sp.points), 0) as total_points
+  coalesce(sum(s.spirit_points), 0) as total_spirit_points
 from teams t
-left join station_points sp on sp.team_id = t.id
+left join scores s on s.team_id = t.id
 group by t.id, t.name
-order by total_points desc;
+order by total_spirit_points desc;
 
 -- No auth yet, so RLS is left open for anon read/write. Tighten this once
 -- station leader / admin logins are added.
