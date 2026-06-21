@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - CBCCS Family Olympics</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="page">
+      <a href="index.html" class="back-link">&larr; Back</a>
+      <h1>Admin</h1>
+      <nav class="tabs">
+        <a href="admin.html" class="active">Dashboard</a>
+        <a href="admin-teams.html">Teams</a>
+        <a href="admin-stations.html">Stations</a>
+      </nav>
+
+      <div id="content">Loading...</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Station Leader - CBCCS Family Olympics</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="page">
+      <a href="index.html" class="back-link">&larr; Back</a>
+      <h1>Station Leader</h1>
+
+      <label class="field">
+        Station
+        <select id="station-select">
+          <option value="">Select a station</option>
+        </select>
+      </label>
+
+      <div id="entry-section" style="display: none">
+        <form id="score-form" class="form">
+          <label class="field">
+            Team
+            <select id="team-select">
+              <option value="">Select a team</option>
+            </select>
+          </label>
+
+          <label class="field" id="value-label">
+            <span id="value-label-text">Score</span>
+            <input type="number" step="any" id="value-input" placeholder="e.g. 10" />
+          </label>
+
+          <label class="field">
+            Spirit Points
+            <input type="number" step="any" min="0" id="spirit-input" placeholder="e.g. 5" />
+          </label>
+
+          <label class="field">
+            Your name (optional)
+            <input type="text" id="recorded-by-input" />
+          </label>
+
+          <button type="submit">Save Score</button>
+          <p class="status" id="status-message"></p>
+        </form>
+
+        <h2>Entries so far</h2>
+        <p id="no-scores-message">No scores recorded yet.</p>
+        <table class="table" id="scores-table" style="display: none">
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th id="value-header">Score</th>
+              <th>Spirit Points</th>
+            </tr>
+          </thead>
+          <tbody id="scores-body"></tbody>
+        </table>
+        <p class="hint">
+          Tip: selecting a team that already has an entry loads it for editing &mdash; re-submitting updates it.
+        </p>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/station.js"></script>
+  </body>
+</html>

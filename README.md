@@ -15,36 +15,28 @@ later using Supabase Auth + Row Level Security without changing the schema.
 
 ## Stack
 
-- React + Vite + TypeScript, deployed as a static site to GitHub Pages
-- Supabase (Postgres) for data storage, accessed directly from the browser via `@supabase/supabase-js`
-- Recharts for the admin leaderboard chart
+- Plain HTML, CSS, and JavaScript — no build step, no framework
+- Supabase (Postgres) for data storage, accessed directly from the browser via the `@supabase/supabase-js` CDN build
+- A hand-rolled CSS bar chart for the admin leaderboard
 
 ## Setup
 
 1. Create a Supabase project at [supabase.com](https://supabase.com).
 2. Open the SQL editor and run `supabase/schema.sql` from this repo. It creates the `teams`, `team_members`, `stations`, and `scores` tables, plus `station_rankings` (per-station placement, for display only) and `spirit_leaderboard` (total spirit points per team across all stations) views.
-3. Copy `.env.example` to `.env.local` and fill in your project's URL and anon key (Project Settings → API in Supabase):
-   ```
-   VITE_SUPABASE_URL=https://your-project.supabase.co
-   VITE_SUPABASE_ANON_KEY=your-anon-key
-   ```
-4. Install dependencies and run the dev server:
-   ```
-   npm install
-   npm run dev
-   ```
+3. Edit `js/supabase-config.js` and fill in your project's URL and anon key (Project Settings → API in Supabase).
+4. Open `index.html` directly in a browser, or serve the folder with any static file server.
 
 ## Using the app
 
-- **Admin** (`/admin`): register teams and members, set up the 8 stations (each is either "points, higher wins" or "time, lower wins"), and view the Spirit Award standings plus a per-station results breakdown (place, score/time, spirit points — informational only, not combined into an overall winner).
-- **Station Leader** (`/station`): pick your station, pick a team, enter their score/time and a spirit points value. Selecting a team that already has an entry loads it for editing; re-submitting updates it.
+- **Admin** (`admin.html`): register teams and members, set up the 8 stations (each is either "points, higher wins" or "time, lower wins"), and view the Spirit Award standings plus a per-station results breakdown (place, score/time, spirit points — informational only, not combined into an overall winner).
+- **Station Leader** (`station.html`): pick your station, pick a team, enter their score/time and a spirit points value. Selecting a team that already has an entry loads it for editing; re-submitting updates it.
 
 ## Deploying to GitHub Pages
 
-A workflow at `.github/workflows/deploy.yml` builds and publishes the app on every push to `main`.
+No build step needed — this is a static site.
 
-1. In the repo, go to **Settings → Pages** and set the source to "GitHub Actions".
-2. Add two repository secrets (**Settings → Secrets and variables → Actions**): `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. These are baked into the static build at build time.
-3. Push to `main` and the workflow will deploy automatically.
+1. In the repo, go to **Settings → Pages** and set the source to "Deploy from a branch", with branch `main` and folder `/ (root)`.
+2. Make sure `js/supabase-config.js` has your real Supabase URL/anon key committed (see Setup above) — there's no build-time secret injection in this stack, so the values in that file are what gets served.
+3. Push to `main` and the site updates within a minute or two.
 
 Note: the Supabase anon key is meant to be public-safe by design, but with the open Row Level Security policies in `schema.sql`, anyone with the deployed URL can currently read/write data. That's fine for a single-day private event link, but should be tightened (e.g. with real station leader/admin logins) before reusing this for anything more sensitive.

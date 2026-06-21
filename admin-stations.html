@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Stations - CBCCS Family Olympics</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="page">
+      <a href="index.html" class="back-link">&larr; Back</a>
+      <h1>Admin</h1>
+      <nav class="tabs">
+        <a href="admin.html">Dashboard</a>
+        <a href="admin-teams.html">Teams</a>
+        <a href="admin-stations.html" class="active">Stations</a>
+      </nav>
+
+      <h2>Add a station</h2>
+      <form id="add-station-form" class="form-inline">
+        <input type="text" id="new-station-name" placeholder="Station name" />
+        <select id="new-station-type">
+          <option value="points">Points (higher wins)</option>
+          <option value="time">Time (lower wins)</option>
+        </select>
+        <button type="submit">Add Station</button>
+      </form>
+      <p class="status" id="status-message"></p>
+
+      <div id="stations-content"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/admin-stations.js"></script>
+  </body>
+</html>
