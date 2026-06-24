@@ -8,7 +8,15 @@ const entrySection = document.getElementById('entry-section')
 const valueLabelText = document.getElementById('value-label-text')
 const valueInput = document.getElementById('value-input')
 const valueHeader = document.getElementById('value-header')
-const spiritInput = document.getElementById('spirit-input')
+const joyInput = document.getElementById('joy-input')
+const patienceInput = document.getElementById('patience-input')
+const humilityInput = document.getElementById('humility-input')
+const cheerInput = document.getElementById('cheer-input')
+const joyValue = document.getElementById('joy-value')
+const patienceValue = document.getElementById('patience-value')
+const humilityValue = document.getElementById('humility-value')
+const cheerValue = document.getElementById('cheer-value')
+const spiritTotal = document.getElementById('spirit-total')
 const recordedByInput = document.getElementById('recorded-by-input')
 const statusMessage = document.getElementById('status-message')
 const noScoresMessage = document.getElementById('no-scores-message')
@@ -21,6 +29,16 @@ function currentStation() {
 
 function teamName(id) {
   return teams.find((t) => t.id === id)?.name ?? 'Unknown team'
+}
+
+function updateSpiritTotal() {
+  joyValue.textContent = joyInput.value
+  patienceValue.textContent = patienceInput.value
+  humilityValue.textContent = humilityInput.value
+  cheerValue.textContent = cheerInput.value
+  spiritTotal.textContent = String(
+    Number(joyInput.value) + Number(patienceInput.value) + Number(humilityInput.value) + Number(cheerInput.value),
+  )
 }
 
 function renderValueFields() {
@@ -70,7 +88,32 @@ async function loadScoresForStation() {
 function prefillForTeam() {
   const existing = scores.find((s) => s.team_id === teamSelect.value)
   valueInput.value = existing ? String(existing.value) : ''
-  spiritInput.value = existing ? String(existing.spirit_points) : ''
+  joyInput.value = existing ? String(existing.joy_points) : 1
+  patienceInput.value = existing ? String(existing.patience_points) : 1
+  humilityInput.value = existing ? String(existing.humility_points) : 1
+  cheerInput.value = existing ? String(existing.cheer_points) : 1
+  updateSpiritTotal()
+}
+
+const STATION_PASSWORD = 'FO20260703'
+
+// Basic deterrent only, not real security: the password is hardcoded here
+// and visible in page source. Fine for keeping casual visitors off the entry
+// form at a private one-day event; see README for the caveats on RLS too.
+function requireStationAuth() {
+  if (sessionStorage.getItem('cbccs-station-auth') === 'true') return true
+  while (true) {
+    const input = prompt('Station leader password:')
+    if (input === null) {
+      window.location.href = 'index.html'
+      return false
+    }
+    if (input === STATION_PASSWORD) {
+      sessionStorage.setItem('cbccs-station-auth', 'true')
+      return true
+    }
+    alert('Incorrect password.')
+  }
 }
 
 async function init() {
@@ -92,6 +135,9 @@ async function init() {
 
 stationSelect.addEventListener('change', loadScoresForStation)
 teamSelect.addEventListener('change', prefillForTeam)
+;[joyInput, patienceInput, humilityInput, cheerInput].forEach((input) =>
+  input.addEventListener('input', updateSpiritTotal),
+)
 
 document.getElementById('score-form').addEventListener('submit', async (e) => {
   e.preventDefault()
@@ -101,13 +147,20 @@ document.getElementById('score-form').addEventListener('submit', async (e) => {
   if (!stationId || !teamId || value === '') return
 
   statusMessage.textContent = 'Saving...'
-  const spiritPoints = spiritInput.value
+  const joyPoints = Number(joyInput.value)
+  const patiencePoints = Number(patienceInput.value)
+  const humilityPoints = Number(humilityInput.value)
+  const cheerPoints = Number(cheerInput.value)
   const { error } = await supabase.from('scores').upsert(
     {
       station_id: stationId,
       team_id: teamId,
       value: Number(value),
-      spirit_points: spiritPoints === '' ? 0 : Number(spiritPoints),
+      joy_points: joyPoints,
+      patience_points: patiencePoints,
+      humility_points: humilityPoints,
+      cheer_points: cheerPoints,
+      spirit_points: joyPoints + patiencePoints + humilityPoints + cheerPoints,
       recorded_by: recordedByInput.value || null,
     },
     { onConflict: 'station_id,team_id' },
@@ -122,4 +175,6 @@ document.getElementById('score-form').addEventListener('submit', async (e) => {
   renderScoresTable()
 })
 
-init()
+if (requireStationAuth()) {
+  init()
+}

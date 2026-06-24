@@ -32,6 +32,13 @@ create table scores (
   station_id uuid not null references stations(id) on delete cascade,
   team_id uuid not null references teams(id) on delete cascade,
   value numeric not null,
+  -- Spirit points are entered as four 1-5 ratings; spirit_points is their sum
+  -- and is what feeds the Spirit Award leaderboard (station_rankings/spirit_leaderboard
+  -- below only ever look at spirit_points, not the individual sections).
+  joy_points numeric not null default 1 check (joy_points between 1 and 5),
+  patience_points numeric not null default 1 check (patience_points between 1 and 5),
+  humility_points numeric not null default 1 check (humility_points between 1 and 5),
+  cheer_points numeric not null default 1 check (cheer_points between 1 and 5),
   spirit_points numeric not null default 0,
   recorded_by text,
   recorded_at timestamptz not null default now(),
