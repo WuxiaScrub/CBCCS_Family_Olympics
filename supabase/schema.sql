@@ -4,6 +4,8 @@
 create table teams (
   id uuid primary key default gen_random_uuid(),
   name text not null unique,
+  -- Optional contact info (email/phone) for the person registering the team.
+  contact_info text,
   created_at timestamptz not null default now()
 );
 

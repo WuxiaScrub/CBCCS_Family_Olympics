@@ -36,6 +36,10 @@ function render() {
                   <button class="link-button" data-action="remove-team" data-id="${team.id}">Delete</button>
                 </div>
               </div>
+              <p class="muted">
+                Contact: ${team.contact_info ? escapeHtml(team.contact_info) : 'none'}
+                <button class="link-button" data-action="edit-contact" data-id="${team.id}">Edit</button>
+              </p>
               <ul>
                 ${members
                   .filter((m) => m.team_id === team.id)
@@ -67,6 +71,18 @@ async function renameTeam(id, currentName) {
   const trimmed = name.trim()
   if (!trimmed || trimmed === currentName) return
   const { error } = await supabase.from('teams').update({ name: trimmed }).eq('id', id)
+  if (error) {
+    statusMessage.textContent = `Error: ${error.message}`
+    return
+  }
+  reload()
+}
+
+async function editContact(id, currentValue) {
+  const value = prompt('Contact info (email/phone)', currentValue ?? '')
+  if (value === null) return
+  const trimmed = value.trim()
+  const { error } = await supabase.from('teams').update({ contact_info: trimmed || null }).eq('id', id)
   if (error) {
     statusMessage.textContent = `Error: ${error.message}`
     return
@@ -118,6 +134,10 @@ teamsContent.addEventListener('click', (e) => {
     renameTeam(target.dataset.id, team?.name ?? '')
   }
   if (action === 'remove-team') removeTeam(target.dataset.id)
+  if (action === 'edit-contact') {
+    const team = teams.find((t) => t.id === target.dataset.id)
+    editContact(target.dataset.id, team?.contact_info)
+  }
   if (action === 'remove-member') removeMember(target.dataset.id)
   if (action === 'add-member') addMember(target.dataset.teamId)
 })

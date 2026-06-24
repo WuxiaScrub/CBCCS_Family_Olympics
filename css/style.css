@@ -453,6 +453,34 @@ button:hover {
   background: linear-gradient(180deg, #e3b48a, #b5733f);
 }
 
+.podium-results-section {
+  width: 100%;
+  max-width: 760px;
+  margin-top: 2.5rem;
+  text-align: center;
+}
+
+.podium-results-title {
+  font-size: 1.3rem;
+  margin: 0 0 1rem;
+  color: #ffe9b8;
+}
+
+.podium-admin-toggle {
+  background: none;
+  border: 1px solid #aebbe0;
+  color: #cdd9f7;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.podium-admin-toggle:hover {
+  border-color: #fff;
+  color: #fff;
+}
+
 .podium-controls {
   margin-top: 2.5rem;
   display: flex;
