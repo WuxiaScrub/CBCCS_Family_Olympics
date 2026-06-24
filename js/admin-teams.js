@@ -27,7 +27,10 @@ function render() {
             <div class="team-card">
               <div class="team-card-header">
                 <h3>${escapeHtml(team.name)}</h3>
-                <button class="link-button" data-action="remove-team" data-id="${team.id}">Delete</button>
+                <div>
+                  <button class="link-button" data-action="rename-team" data-id="${team.id}">Rename</button>
+                  <button class="link-button" data-action="remove-team" data-id="${team.id}">Delete</button>
+                </div>
               </div>
               <ul>
                 ${members
@@ -52,6 +55,19 @@ function render() {
         .join('')}
     </div>
   `
+}
+
+async function renameTeam(id, currentName) {
+  const name = prompt('Rename team', currentName)
+  if (name === null) return
+  const trimmed = name.trim()
+  if (!trimmed || trimmed === currentName) return
+  const { error } = await supabase.from('teams').update({ name: trimmed }).eq('id', id)
+  if (error) {
+    statusMessage.textContent = `Error: ${error.message}`
+    return
+  }
+  reload()
 }
 
 async function removeTeam(id) {
@@ -93,6 +109,10 @@ teamsContent.addEventListener('click', (e) => {
   const target = e.target.closest('[data-action]')
   if (!target) return
   const action = target.dataset.action
+  if (action === 'rename-team') {
+    const team = teams.find((t) => t.id === target.dataset.id)
+    renameTeam(target.dataset.id, team?.name ?? '')
+  }
   if (action === 'remove-team') removeTeam(target.dataset.id)
   if (action === 'remove-member') removeMember(target.dataset.id)
   if (action === 'add-member') addMember(target.dataset.teamId)
