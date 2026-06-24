@@ -32,10 +32,30 @@
             <input type="number" step="any" id="value-input" placeholder="e.g. 10" />
           </label>
 
-          <label class="field">
-            Spirit Points
-            <input type="number" step="any" min="0" id="spirit-input" placeholder="e.g. 5" />
-          </label>
+          <div class="field spirit-section">
+            <span>Spirit Points</span>
+            <div class="slider-row">
+              <label for="joy-input">Joy</label>
+              <input type="range" min="1" max="5" step="1" value="1" id="joy-input" />
+              <span class="slider-value" id="joy-value">1</span>
+            </div>
+            <div class="slider-row">
+              <label for="patience-input">Patience</label>
+              <input type="range" min="1" max="5" step="1" value="1" id="patience-input" />
+              <span class="slider-value" id="patience-value">1</span>
+            </div>
+            <div class="slider-row">
+              <label for="humility-input">Humility</label>
+              <input type="range" min="1" max="5" step="1" value="1" id="humility-input" />
+              <span class="slider-value" id="humility-value">1</span>
+            </div>
+            <div class="slider-row">
+              <label for="cheer-input">Cheer</label>
+              <input type="range" min="1" max="5" step="1" value="1" id="cheer-input" />
+              <span class="slider-value" id="cheer-value">1</span>
+            </div>
+            <div class="slider-total">Total: <span id="spirit-total">4</span></div>
+          </div>
 
           <label class="field">
             Your name (optional)
