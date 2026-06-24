@@ -43,50 +43,69 @@ function renderPodium(groups) {
     .join('')
 }
 
-function renderResultsTable(rows) {
-  if (rows.length === 0) {
+const MEDALS = { 1: '\u{1F947}', 2: '\u{1F948}', 3: '\u{1F949}' }
+
+function medalCell(place) {
+  return MEDALS[place] ? `<span title="${RANK_META[place].label}">${MEDALS[place]}</span>` : '—'
+}
+
+function renderResultsGrid(teams, stations, stationRankings, spiritLeaderboard) {
+  if (teams.length === 0) {
     resultsTableEl.innerHTML = '<p class="podium-empty">No results yet.</p>'
     return
   }
+
+  const placeByTeamStation = new Map()
+  for (const r of stationRankings) {
+    placeByTeamStation.set(`${r.team_id}_${r.station_id}`, r.place)
+  }
+
+  const spiritRankByTeam = new Map()
+  spiritLeaderboard
+    .slice()
+    .sort((a, b) => b.total_spirit_points - a.total_spirit_points)
+    .forEach((row, i) => spiritRankByTeam.set(row.team_id, i + 1))
+
   resultsTableEl.innerHTML = `
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Team</th>
-          <th>Points</th>
-          <th>Events</th>
-          <th>1st</th>
-          <th>2nd</th>
-          <th>3rd</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rows
-          .map(
-            (row) => `
-              <tr>
-                <td>${escapeHtml(String(row.overall_rank))}</td>
-                <td>${escapeHtml(row.team_name)}</td>
-                <td>${escapeHtml(String(row.total_points))}</td>
-                <td>${escapeHtml(String(row.events_participated))}</td>
-                <td>${escapeHtml(String(row.first_place_count))}</td>
-                <td>${escapeHtml(String(row.second_place_count))}</td>
-                <td>${escapeHtml(String(row.third_place_count))}</td>
-              </tr>
-            `,
-          )
-          .join('')}
-      </tbody>
-    </table>
+    <div class="results-grid-wrap">
+      <table class="table results-grid">
+        <thead>
+          <tr>
+            <th>Team</th>
+            ${stations.map((s) => `<th>${escapeHtml(s.name)}</th>`).join('')}
+            <th>Spirit Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${teams
+            .map(
+              (team) => `
+                <tr>
+                  <td>${escapeHtml(team.name)}</td>
+                  ${stations
+                    .map((s) => `<td>${medalCell(placeByTeamStation.get(`${team.id}_${s.id}`))}</td>`)
+                    .join('')}
+                  <td>${medalCell(spiritRankByTeam.get(team.id))}</td>
+                </tr>
+              `,
+            )
+            .join('')}
+        </tbody>
+      </table>
+    </div>
   `
 }
 
 async function load() {
-  const { data } = await supabase.from('overall_leaderboard').select('*').order('overall_rank')
-  const overallRows = data ?? []
-  renderPodium(groupByRank(overallRows.filter((row) => row.overall_rank <= 3)))
-  renderResultsTable(overallRows)
+  const [overallRes, teamsRes, stationsRes, stationRankingsRes, spiritRes] = await Promise.all([
+    supabase.from('overall_leaderboard').select('*').order('overall_rank').lte('overall_rank', 3),
+    supabase.from('teams').select('*').order('name'),
+    supabase.from('stations').select('*').order('sort_order'),
+    supabase.from('station_rankings').select('*'),
+    supabase.from('spirit_leaderboard').select('*'),
+  ])
+  renderPodium(groupByRank(overallRes.data ?? []))
+  renderResultsGrid(teamsRes.data ?? [], stationsRes.data ?? [], stationRankingsRes.data ?? [], spiritRes.data ?? [])
   updatedEl.textContent = `Updated ${new Date().toLocaleTimeString()}`
 }
 
