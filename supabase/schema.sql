@@ -77,9 +77,9 @@ order by total_spirit_points desc;
 -- ties at a station share the same points (e.g. two 2nd-place ties both
 -- score 3, and there's no 3rd place that round). Points are summed across
 -- every station a team participated in for the overall_rank. Ties in
--- overall_rank are broken, in order, by: events participated, then most
--- 1st-place finishes, then most 2nd-place finishes, then most 3rd-place
--- finishes; any remaining tie is left as a tie.
+-- overall_rank are broken, in order, by: most 1st-place finishes, then
+-- most 2nd-place finishes, then most 3rd-place finishes; any remaining
+-- tie is left as a tie.
 create or replace view overall_leaderboard as
 with team_points as (
   select
@@ -103,7 +103,6 @@ select
   rank() over (
     order by
       coalesce(tp.total_points, 0) desc,
-      coalesce(tp.events_participated, 0) desc,
       coalesce(tp.first_place_count, 0) desc,
       coalesce(tp.second_place_count, 0) desc,
       coalesce(tp.third_place_count, 0) desc

@@ -191,12 +191,14 @@ async function reload() {
     }
     <div class="dashboard-header">
       <h2>Overall Ranking</h2>
-      <button id="refresh-button">Refresh</button>
+      <div>
+        <a href="podium.html" class="text-link" style="margin-right: 1rem">View Final Results</a>
+        <button id="refresh-button">Refresh</button>
+      </div>
     </div>
     <p class="muted">
       Each station awards points by placement (1st = 5, 2nd = 3, 3rd = 1, rest = 0),
-      summed across every station. Ties are broken by events participated, then most
-      1st/2nd/3rd-place finishes.
+      summed across every station. Ties are broken by most 1st/2nd/3rd-place finishes.
     </p>
     ${renderOverallSection(overallLeaderboard)}
     <h2>Spirit Award</h2>

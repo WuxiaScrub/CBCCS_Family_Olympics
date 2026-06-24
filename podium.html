@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Final Results - CBCCS Family Olympics</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="podium-page">
+      <h1 class="podium-title">&#127942; Final Results &#127942;</h1>
+      <p class="podium-subtitle">CBCCS Family Olympics &mdash; Overall Ranking</p>
+      <div class="podium-stage" id="podium"></div>
+      <div class="podium-controls">
+        <a href="index.html" class="back-link">&larr; Back</a>
+        <button id="refresh-button">Refresh</button>
+        <span class="podium-updated" id="updated-at"></span>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/util.js"></script>
+    <script type="module" src="js/podium.js"></script>
+  </body>
+</html>

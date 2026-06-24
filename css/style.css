@@ -70,6 +70,17 @@ body {
   text-decoration: none;
 }
 
+.text-link {
+  color: #2952b3;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -332,4 +343,139 @@ button:hover {
   flex-shrink: 0;
   font-size: 0.85rem;
   color: #344;
+}
+
+.podium-page {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #16204a 0%, #2952b3 55%, #4a76d6 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1.5rem 3rem;
+}
+
+.podium-title {
+  font-size: 2.4rem;
+  margin: 0 0 0.35rem;
+  text-align: center;
+}
+
+.podium-subtitle {
+  color: #cdd9f7;
+  margin: 0 0 3rem;
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+.podium-stage {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 760px;
+  flex-wrap: wrap;
+}
+
+.podium-empty {
+  color: #cdd9f7;
+  font-size: 1.1rem;
+}
+
+.podium-spot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 210px;
+  animation: podium-rise 0.5s ease-out backwards;
+}
+
+.podium-gold {
+  order: 2;
+}
+
+.podium-silver {
+  order: 1;
+}
+
+.podium-bronze {
+  order: 3;
+}
+
+.podium-medal {
+  font-size: 2.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.podium-teams {
+  margin-bottom: 0.3rem;
+  text-align: center;
+}
+
+.podium-team-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.3;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.podium-points {
+  font-size: 0.95rem;
+  color: #ffe9b8;
+  margin-bottom: 0.85rem;
+}
+
+.podium-block {
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #1c2433;
+  box-shadow: 0 -2px 14px rgba(0, 0, 0, 0.25);
+}
+
+.podium-gold .podium-block {
+  height: 180px;
+  background: linear-gradient(180deg, #ffe18a, #d6973b);
+}
+
+.podium-silver .podium-block {
+  height: 130px;
+  background: linear-gradient(180deg, #f4f6fb, #b9c2d4);
+}
+
+.podium-bronze .podium-block {
+  height: 100px;
+  background: linear-gradient(180deg, #e3b48a, #b5733f);
+}
+
+.podium-controls {
+  margin-top: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.podium-controls .back-link {
+  color: #cdd9f7;
+}
+
+.podium-updated {
+  color: #aebbe0;
+  font-size: 0.85rem;
+}
+
+@keyframes podium-rise {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
