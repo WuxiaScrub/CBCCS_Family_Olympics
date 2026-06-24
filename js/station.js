@@ -99,8 +99,10 @@ const STATION_PASSWORD = 'FO20260703'
 // Basic deterrent only, not real security: the password is hardcoded here
 // and visible in page source. Fine for keeping casual visitors off the entry
 // form at a private one-day event; see README for the caveats on RLS too.
+// Admins are already verified server-side, so an admin session skips this.
 function requireStationAuth() {
   if (sessionStorage.getItem('cbccs-station-auth') === 'true') return true
+  if (sessionStorage.getItem('cbccs-admin-auth') === 'true') return true
   while (true) {
     const input = prompt('Station leader password:')
     if (input === null) {
