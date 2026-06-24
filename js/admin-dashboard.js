@@ -166,6 +166,9 @@ async function reload() {
     supabase.from('teams').select('*'),
     supabase.from('station_rankings').select('*'),
   ])
+  const errors = [overallRes, spiritRes, stationsRes, teamsRes, rankingsRes]
+    .map((res) => res.error?.message)
+    .filter(Boolean)
   const overallLeaderboard = overallRes.data ?? []
   const spiritLeaderboard = spiritRes.data ?? []
   const stations = stationsRes.data ?? []
@@ -173,14 +176,29 @@ async function reload() {
   const rankings = rankingsRes.data ?? []
 
   content.innerHTML = `
+    ${
+      errors.length > 0
+        ? `
+          <div class="error-banner">
+            <strong>Couldn't load some dashboard data:</strong>
+            <ul>${errors.map((e) => `<li>${escapeHtml(e)}</li>`).join('')}</ul>
+            <p>If this mentions a missing view (e.g. "overall_leaderboard"), run the matching
+            migration script from <code>supabase/</code> in the Supabase SQL editor &mdash; see
+            the README's Setup section.</p>
+          </div>
+        `
+        : ''
+    }
     <div class="dashboard-header">
       <h2>Overall Ranking</h2>
-      <button id="refresh-button">Refresh</button>
+      <div>
+        <a href="podium.html" class="text-link" style="margin-right: 1rem">View Final Results</a>
+        <button id="refresh-button">Refresh</button>
+      </div>
     </div>
     <p class="muted">
       Each station awards points by placement (1st = 5, 2nd = 3, 3rd = 1, rest = 0),
-      summed across every station. Ties are broken by events participated, then most
-      1st/2nd/3rd-place finishes.
+      summed across every station. Ties are broken by most 1st/2nd/3rd-place finishes.
     </p>
     ${renderOverallSection(overallLeaderboard)}
     <h2>Spirit Award</h2>
