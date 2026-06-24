@@ -144,7 +144,10 @@ document.getElementById('score-form').addEventListener('submit', async (e) => {
   const stationId = stationSelect.value
   const teamId = teamSelect.value
   const value = valueInput.value
-  if (!stationId || !teamId || value === '') return
+  if (!stationId || !teamId || value === '') {
+    statusMessage.textContent = 'Please select a station and team, and enter a score.'
+    return
+  }
 
   statusMessage.textContent = 'Saving...'
   const joyPoints = Number(joyInput.value)
