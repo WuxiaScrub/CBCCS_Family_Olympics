@@ -16,20 +16,20 @@ function rankDisplay(rank) {
   return medal ? `${rank} ${medal}` : String(rank)
 }
 
-function renderSpiritChart(spiritLeaderboard) {
-  if (spiritLeaderboard.length === 0) return ''
-  const max = Math.max(...spiritLeaderboard.map((r) => r.total_spirit_points), 1)
+function renderBarChart(rows, valueKey) {
+  if (rows.length === 0) return ''
+  const max = Math.max(...rows.map((r) => r[valueKey]), 1)
   return `
     <div class="chart-wrap">
-      ${spiritLeaderboard
+      ${rows
         .map(
           (row) => `
             <div class="bar-row">
               <span class="bar-label">${escapeHtml(row.team_name)}</span>
               <div class="bar-track">
-                <div class="bar-fill" style="width: ${(row.total_spirit_points / max) * 100}%"></div>
+                <div class="bar-fill" style="width: ${(row[valueKey] / max) * 100}%"></div>
               </div>
-              <span class="bar-value">${escapeHtml(String(row.total_spirit_points))}</span>
+              <span class="bar-value">${escapeHtml(String(row[valueKey]))}</span>
             </div>
           `,
         )
@@ -38,12 +38,51 @@ function renderSpiritChart(spiritLeaderboard) {
   `
 }
 
+function renderOverallSection(overallLeaderboard) {
+  if (overallLeaderboard.length === 0) {
+    return '<p>No teams registered yet.</p>'
+  }
+  return `
+    ${renderBarChart(overallLeaderboard, 'total_points')}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Team</th>
+          <th>Points</th>
+          <th>Events</th>
+          <th>1st</th>
+          <th>2nd</th>
+          <th>3rd</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${overallLeaderboard
+          .map(
+            (row) => `
+              <tr>
+                <td>${rankDisplay(row.overall_rank)}</td>
+                <td>${escapeHtml(row.team_name)}</td>
+                <td>${escapeHtml(String(row.total_points))}</td>
+                <td>${escapeHtml(String(row.events_participated))}</td>
+                <td>${escapeHtml(String(row.first_place_count))}</td>
+                <td>${escapeHtml(String(row.second_place_count))}</td>
+                <td>${escapeHtml(String(row.third_place_count))}</td>
+              </tr>
+            `,
+          )
+          .join('')}
+      </tbody>
+    </table>
+  `
+}
+
 function renderSpiritSection(spiritLeaderboard) {
   if (spiritLeaderboard.length === 0) {
     return '<p>No teams registered yet.</p>'
   }
   return `
-    ${renderSpiritChart(spiritLeaderboard)}
+    ${renderBarChart(spiritLeaderboard, 'total_spirit_points')}
     <table class="table">
       <thead>
         <tr>
@@ -120,12 +159,14 @@ function renderStationSection(stations, rankings) {
 }
 
 async function reload() {
-  const [spiritRes, stationsRes, teamsRes, rankingsRes] = await Promise.all([
+  const [overallRes, spiritRes, stationsRes, teamsRes, rankingsRes] = await Promise.all([
+    supabase.from('overall_leaderboard').select('*').order('overall_rank'),
     supabase.from('spirit_leaderboard').select('*'),
     supabase.from('stations').select('*').order('sort_order'),
     supabase.from('teams').select('*'),
     supabase.from('station_rankings').select('*'),
   ])
+  const overallLeaderboard = overallRes.data ?? []
   const spiritLeaderboard = spiritRes.data ?? []
   const stations = stationsRes.data ?? []
   teams = teamsRes.data ?? []
@@ -133,12 +174,19 @@ async function reload() {
 
   content.innerHTML = `
     <div class="dashboard-header">
-      <h2>Spirit Award</h2>
+      <h2>Overall Ranking</h2>
       <button id="refresh-button">Refresh</button>
     </div>
     <p class="muted">
-      Every station records a spirit points value per team. This is the only score
-      that's combined across stations &mdash; each event below stands on its own.
+      Each station awards points by placement (1st = 5, 2nd = 3, 3rd = 1, rest = 0),
+      summed across every station. Ties are broken by events participated, then most
+      1st/2nd/3rd-place finishes.
+    </p>
+    ${renderOverallSection(overallLeaderboard)}
+    <h2>Spirit Award</h2>
+    <p class="muted">
+      Every station records a spirit points value per team, summed across stations
+      &mdash; separate from the overall ranking above.
     </p>
     ${renderSpiritSection(spiritLeaderboard)}
     <h2>Results by station</h2>
