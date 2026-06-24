@@ -6,6 +6,8 @@ create table teams (
   name text not null unique,
   -- Optional contact info (email/phone) for the person registering the team.
   contact_info text,
+  -- Set by an admin once the team has physically arrived on event day.
+  checked_in boolean not null default false,
   created_at timestamptz not null default now()
 );
 
