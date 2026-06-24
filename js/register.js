@@ -3,6 +3,7 @@ const MAX_MEMBERS = 7
 
 const memberInputsContainer = document.getElementById('member-inputs')
 const teamNameInput = document.getElementById('team-name-input')
+const contactInfoInput = document.getElementById('contact-info-input')
 const statusMessage = document.getElementById('status-message')
 const form = document.getElementById('register-form')
 
@@ -21,6 +22,7 @@ memberInputsContainer.innerHTML = Array.from({ length: MAX_MEMBERS })
 form.addEventListener('submit', async (e) => {
   e.preventDefault()
   const teamName = teamNameInput.value.trim()
+  const contactInfo = contactInfoInput.value.trim()
   const memberNames = [...memberInputsContainer.querySelectorAll('[data-role="member-input"]')]
     .map((input) => input.value.trim())
     .filter((name) => name !== '')
@@ -36,7 +38,7 @@ form.addEventListener('submit', async (e) => {
 
   const { data: team, error: teamError } = await supabase
     .from('teams')
-    .insert({ name: teamName })
+    .insert({ name: teamName, contact_info: contactInfo || null })
     .select()
     .single()
 
