@@ -1,5 +1,5 @@
-const MIN_MEMBERS = 4
-const MAX_MEMBERS = 6
+const MIN_MEMBERS = 5
+const MAX_MEMBERS = 7
 
 const memberInputsContainer = document.getElementById('member-inputs')
 const teamNameInput = document.getElementById('team-name-input')
