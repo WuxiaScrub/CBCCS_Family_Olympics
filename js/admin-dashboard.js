@@ -5,6 +5,13 @@ function teamName(id) {
   return teams.find((t) => t.id === id)?.name ?? 'Unknown team'
 }
 
+const MEDALS = { 1: '\u{1F947}', 2: '\u{1F948}', 3: '\u{1F949}' }
+
+function rankDisplay(rank) {
+  const medal = MEDALS[rank]
+  return medal ? `${rank} ${medal}` : String(rank)
+}
+
 function renderSpiritChart(spiritLeaderboard) {
   if (spiritLeaderboard.length === 0) return ''
   const max = Math.max(...spiritLeaderboard.map((r) => r.total_spirit_points), 1)
@@ -46,7 +53,7 @@ function renderSpiritSection(spiritLeaderboard) {
           .map(
             (row, i) => `
               <tr>
-                <td>${i + 1}</td>
+                <td>${rankDisplay(i + 1)}</td>
                 <td>${escapeHtml(row.team_name)}</td>
                 <td>${escapeHtml(String(row.total_spirit_points))}</td>
               </tr>
@@ -90,7 +97,7 @@ function renderStationSection(stations, rankings) {
                       .map(
                         (r) => `
                           <tr>
-                            <td>${r.place}</td>
+                            <td>${rankDisplay(r.place)}</td>
                             <td>${escapeHtml(teamName(r.team_id))}</td>
                             <td>${escapeHtml(String(r.value))}</td>
                             <td>${escapeHtml(String(r.spirit_points))}</td>
