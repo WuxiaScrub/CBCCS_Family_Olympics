@@ -17,7 +17,6 @@ const patienceValue = document.getElementById('patience-value')
 const humilityValue = document.getElementById('humility-value')
 const cheerValue = document.getElementById('cheer-value')
 const spiritTotal = document.getElementById('spirit-total')
-const recordedByInput = document.getElementById('recorded-by-input')
 const statusMessage = document.getElementById('status-message')
 const noScoresMessage = document.getElementById('no-scores-message')
 const scoresTable = document.getElementById('scores-table')
@@ -161,7 +160,6 @@ document.getElementById('score-form').addEventListener('submit', async (e) => {
       humility_points: humilityPoints,
       cheer_points: cheerPoints,
       spirit_points: joyPoints + patiencePoints + humilityPoints + cheerPoints,
-      recorded_by: recordedByInput.value || null,
     },
     { onConflict: 'station_id,team_id' },
   )
