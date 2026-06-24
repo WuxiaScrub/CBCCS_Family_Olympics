@@ -455,9 +455,40 @@ button:hover {
 
 .podium-results-section {
   width: 100%;
-  max-width: 760px;
+  max-width: 920px;
   margin-top: 2.5rem;
   text-align: center;
+}
+
+.results-grid-wrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.results-grid {
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
+.results-grid th,
+.results-grid td {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.results-grid th:first-child,
+.results-grid td:first-child {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  background: white;
+  box-shadow: 1px 0 0 #eef0f5;
+}
+
+.results-grid th:first-child {
+  background: #eef1f9;
 }
 
 .podium-results-title {
