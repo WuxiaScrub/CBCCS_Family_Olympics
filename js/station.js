@@ -95,6 +95,27 @@ function prefillForTeam() {
   updateSpiritTotal()
 }
 
+const STATION_PASSWORD = 'FO20260703'
+
+// Basic deterrent only, not real security: the password is hardcoded here
+// and visible in page source. Fine for keeping casual visitors off the entry
+// form at a private one-day event; see README for the caveats on RLS too.
+function requireStationAuth() {
+  if (sessionStorage.getItem('cbccs-station-auth') === 'true') return true
+  while (true) {
+    const input = prompt('Station leader password:')
+    if (input === null) {
+      window.location.href = 'index.html'
+      return false
+    }
+    if (input === STATION_PASSWORD) {
+      sessionStorage.setItem('cbccs-station-auth', 'true')
+      return true
+    }
+    alert('Incorrect password.')
+  }
+}
+
 async function init() {
   const [stationsRes, teamsRes] = await Promise.all([
     supabase.from('stations').select('*').order('sort_order'),
@@ -154,4 +175,6 @@ document.getElementById('score-form').addEventListener('submit', async (e) => {
   renderScoresTable()
 })
 
-init()
+if (requireStationAuth()) {
+  init()
+}
