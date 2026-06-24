@@ -4,6 +4,7 @@
 create table teams (
   id uuid primary key default gen_random_uuid(),
   name text not null unique,
+  checked_in boolean not null default false,
   created_at timestamptz not null default now()
 );
 

@@ -13,7 +13,9 @@ const MEDALS = { 1: '\u{1F947}', 2: '\u{1F948}', 3: '\u{1F949}' }
 
 function rankDisplay(rank) {
   const medal = MEDALS[rank]
-  return medal ? `${rank} ${medal}` : String(rank)
+  // Non-breaking space so rank + medal can't wrap onto separate lines
+  // in a narrow table cell (e.g. next to a long team name).
+  return medal ? `${rank} ${medal}` : String(rank)
 }
 
 function renderBarChart(rows, valueKey) {
