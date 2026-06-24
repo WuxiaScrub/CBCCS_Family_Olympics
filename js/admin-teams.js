@@ -1,3 +1,7 @@
+import { requireAdminAuth } from './admin-auth.js'
+
+await requireAdminAuth()
+
 let teams = []
 let members = []
 
