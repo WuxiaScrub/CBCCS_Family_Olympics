@@ -275,6 +275,25 @@ button:hover {
   font-weight: 400;
 }
 
+.error-banner {
+  background: #fbeae8;
+  border: 1px solid #f1c4c0;
+  color: #7c1812;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.error-banner ul {
+  margin: 0.5rem 0;
+  padding-left: 1.2rem;
+}
+
+.error-banner p:last-child {
+  margin-bottom: 0;
+}
+
 .bar-row {
   display: flex;
   align-items: center;
