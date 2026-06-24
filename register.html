@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register a Team - CBCCS Family Olympics</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="page">
+      <a href="index.html" class="back-link">&larr; Back</a>
+      <h1>Register a Team</h1>
+      <p class="hint">Teams need 4 to 6 members. You won't be able to see other teams' rosters from here.</p>
+
+      <form id="register-form" class="form">
+        <label class="field">
+          Team name
+          <input type="text" id="team-name-input" required />
+        </label>
+
+        <div id="member-inputs"></div>
+
+        <button type="submit">Register Team</button>
+        <p class="status" id="status-message"></p>
+      </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/register.js"></script>
+  </body>
+</html>
