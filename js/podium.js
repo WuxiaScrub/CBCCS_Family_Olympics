@@ -1,3 +1,7 @@
+import { requireAdminAuth } from './admin-auth.js'
+
+await requireAdminAuth()
+
 const podiumEl = document.getElementById('podium')
 const updatedEl = document.getElementById('updated-at')
 const resultsTableEl = document.getElementById('results-table')
@@ -7,9 +11,6 @@ const RANK_META = {
   2: { label: '2nd Place', medal: '\u{1F948}', className: 'silver' },
   3: { label: '3rd Place', medal: '\u{1F949}', className: 'bronze' },
 }
-
-let overallRows = []
-let isAdmin = sessionStorage.getItem('cbccs-admin-auth') === 'true'
 
 function groupByRank(rows) {
   const map = new Map()
@@ -43,10 +44,6 @@ function renderPodium(groups) {
 }
 
 function renderResultsTable(rows) {
-  if (!isAdmin) {
-    resultsTableEl.innerHTML = `<button id="admin-results-toggle" class="podium-admin-toggle">Admin: show full standings</button>`
-    return
-  }
   if (rows.length === 0) {
     resultsTableEl.innerHTML = '<p class="podium-empty">No results yet.</p>'
     return
@@ -85,26 +82,9 @@ function renderResultsTable(rows) {
   `
 }
 
-async function authenticateAdmin() {
-  const input = prompt('Admin password:')
-  if (input === null) return
-  const { data, error } = await supabase.rpc('verify_admin_password', { input_password: input })
-  if (!error && data === true) {
-    sessionStorage.setItem('cbccs-admin-auth', 'true')
-    isAdmin = true
-    renderResultsTable(overallRows)
-  } else {
-    alert('Incorrect password.')
-  }
-}
-
-resultsTableEl.addEventListener('click', (e) => {
-  if (e.target.id === 'admin-results-toggle') authenticateAdmin()
-})
-
 async function load() {
   const { data } = await supabase.from('overall_leaderboard').select('*').order('overall_rank')
-  overallRows = data ?? []
+  const overallRows = data ?? []
   renderPodium(groupByRank(overallRows.filter((row) => row.overall_rank <= 3)))
   renderResultsTable(overallRows)
   updatedEl.textContent = `Updated ${new Date().toLocaleTimeString()}`
