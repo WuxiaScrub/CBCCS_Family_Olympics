@@ -23,12 +23,14 @@ function render() {
     teamsContent.innerHTML = '<p>No teams yet.</p>'
     return
   }
+  const checkedInCount = teams.filter((t) => t.checked_in).length
   teamsContent.innerHTML = `
+    <p class="muted">${checkedInCount} / ${teams.length} teams checked in</p>
     <div class="team-grid">
       ${teams
         .map(
           (team) => `
-            <div class="team-card">
+            <div class="team-card${team.checked_in ? ' team-card-checked-in' : ''}">
               <div class="team-card-header">
                 <h3>${escapeHtml(team.name)}</h3>
                 <div>
@@ -36,6 +38,15 @@ function render() {
                   <button class="link-button" data-action="remove-team" data-id="${team.id}">Delete</button>
                 </div>
               </div>
+              <label class="checkin-toggle">
+                <input
+                  type="checkbox"
+                  data-action="toggle-checkin"
+                  data-id="${team.id}"
+                  ${team.checked_in ? 'checked' : ''}
+                />
+                Checked in
+              </label>
               <p class="muted">
                 Contact: ${team.contact_info ? escapeHtml(team.contact_info) : 'none'}
                 <button class="link-button" data-action="edit-contact" data-id="${team.id}">Edit</button>
@@ -90,6 +101,14 @@ async function editContact(id, currentValue) {
   reload()
 }
 
+async function toggleCheckedIn(id, checkedIn) {
+  const { error } = await supabase.from('teams').update({ checked_in: checkedIn }).eq('id', id)
+  if (error) {
+    statusMessage.textContent = `Error: ${error.message}`
+  }
+  reload()
+}
+
 async function removeTeam(id) {
   if (!confirm('Delete this team and all its members/scores?')) return
   await supabase.from('teams').delete().eq('id', id)
@@ -140,6 +159,12 @@ teamsContent.addEventListener('click', (e) => {
   }
   if (action === 'remove-member') removeMember(target.dataset.id)
   if (action === 'add-member') addMember(target.dataset.teamId)
+})
+
+teamsContent.addEventListener('change', (e) => {
+  const target = e.target.closest('[data-action="toggle-checkin"]')
+  if (!target) return
+  toggleCheckedIn(target.dataset.id, target.checked)
 })
 
 teamsContent.addEventListener('keydown', (e) => {
