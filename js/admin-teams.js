@@ -121,11 +121,14 @@ async function editContact(id, currentValue) {
 }
 
 async function toggleCheckedIn(id, checkedIn) {
-  const update = { checked_in: checkedIn }
-  if (!checkedIn) update.color = null
-  const { error } = await supabase.from('teams').update(update).eq('id', id)
+  const { error } = await supabase.from('teams').update({ checked_in: checkedIn }).eq('id', id)
   if (error) {
     statusMessage.textContent = `Error: ${error.message}`
+    reload()
+    return
+  }
+  if (!checkedIn) {
+    await supabase.from('teams').update({ color: null }).eq('id', id)
   }
   reload()
 }
