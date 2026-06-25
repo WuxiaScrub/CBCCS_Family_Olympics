@@ -23,13 +23,17 @@
       </form>
       <p class="status" id="status-message"></p>
 
-      <h2>Teams</h2>
+      <div class="dashboard-header">
+        <h2>Teams</h2>
+        <button type="button" id="auto-merge-button">Auto-merge teams under 5 members</button>
+      </div>
       <div id="teams-content"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/util.js"></script>
+    <script src="js/colors.js"></script>
     <script type="module" src="js/admin-teams.js"></script>
   </body>
 </html>

@@ -8,6 +8,22 @@ create table teams (
   contact_info text,
   -- Set by an admin once the team has physically arrived on event day.
   checked_in boolean not null default false,
+  -- Color code assigned once a team is checked in (e.g. "Red I"). Cleared
+  -- when a team is unchecked. Update this list to match js/colors.js.
+  color text check (
+    color is null or color in (
+      'Red I', 'Red II',
+      'Blue I', 'Blue II',
+      'Green I', 'Green II',
+      'Yellow I', 'Yellow II',
+      'Orange I', 'Orange II',
+      'Purple I', 'Purple II',
+      'Pink I', 'Pink II',
+      'Teal I', 'Teal II',
+      'Black I', 'Black II',
+      'White I', 'White II'
+    )
+  ),
   created_at timestamptz not null default now()
 );
 
@@ -120,6 +136,8 @@ alter table teams enable row level security;
 alter table team_members enable row level security;
 alter table stations enable row level security;
 alter table scores enable row level security;
+
+create unique index if not exists teams_color_unique on teams (color) where color is not null;
 
 create policy "anon full access" on teams for all using (true) with check (true);
 create policy "anon full access" on team_members for all using (true) with check (true);
