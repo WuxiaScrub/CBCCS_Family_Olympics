@@ -24,6 +24,7 @@ function render() {
     return
   }
   const checkedInCount = teams.filter((t) => t.checked_in).length
+  const takenColors = new Set(teams.filter((t) => t.checked_in && t.color).map((t) => t.color))
   teamsContent.innerHTML = `
     <p class="muted">${checkedInCount} / ${teams.length} teams checked in</p>
     <div class="team-grid">
@@ -47,6 +48,24 @@ function render() {
                 />
                 Checked in
               </label>
+              ${
+                team.checked_in
+                  ? `
+                    <label class="field">
+                      Color
+                      <select data-action="assign-color" data-id="${team.id}">
+                        <option value="">No color</option>
+                        ${TEAM_COLOR_CODES.filter((code) => code === team.color || !takenColors.has(code))
+                          .map(
+                            (code) =>
+                              `<option value="${code}" ${team.color === code ? 'selected' : ''}>${code}</option>`,
+                          )
+                          .join('')}
+                      </select>
+                    </label>
+                  `
+                  : ''
+              }
               <p class="muted">
                 Contact: ${team.contact_info ? escapeHtml(team.contact_info) : 'none'}
                 <button class="link-button" data-action="edit-contact" data-id="${team.id}">Edit</button>
@@ -102,10 +121,69 @@ async function editContact(id, currentValue) {
 }
 
 async function toggleCheckedIn(id, checkedIn) {
-  const { error } = await supabase.from('teams').update({ checked_in: checkedIn }).eq('id', id)
+  const update = { checked_in: checkedIn }
+  if (!checkedIn) update.color = null
+  const { error } = await supabase.from('teams').update(update).eq('id', id)
   if (error) {
     statusMessage.textContent = `Error: ${error.message}`
   }
+  reload()
+}
+
+async function assignColor(id, color) {
+  const { error } = await supabase.from('teams').update({ color: color || null }).eq('id', id)
+  if (error) {
+    statusMessage.textContent = `Error: ${error.message}`
+  }
+  reload()
+}
+
+async function autoMergeSmallTeams() {
+  const smallTeams = teams
+    .map((t) => ({ id: t.id, count: members.filter((m) => m.team_id === t.id).length }))
+    .filter((t) => t.count > 0 && t.count < 5)
+
+  if (smallTeams.length === 0) {
+    statusMessage.textContent = 'No teams with fewer than 5 members to merge.'
+    return
+  }
+
+  const password = prompt(
+    `This will merge ${smallTeams.length} team(s) with fewer than 5 members into combined teams of 5-7 members. This cannot be undone.\n\nRe-enter the admin password to confirm:`,
+  )
+  if (password === null) return
+  const { data, error } = await supabase.rpc('verify_admin_password', { input_password: password })
+  if (error || data !== true) {
+    alert('Incorrect password. Merge cancelled.')
+    return
+  }
+
+  const pool = [...smallTeams].sort((a, b) => b.count - a.count)
+  const groups = []
+  while (pool.length > 0) {
+    const base = pool.shift()
+    const group = [base]
+    let count = base.count
+    while (count < 5 && pool.length > 0) {
+      let idx = pool.findIndex((t) => count + t.count <= 7)
+      if (idx === -1) idx = pool.length - 1
+      const [pick] = pool.splice(idx, 1)
+      group.push(pick)
+      count += pick.count
+    }
+    groups.push(group)
+  }
+
+  for (const group of groups) {
+    if (group.length < 2) continue
+    const [surviving, ...rest] = group
+    for (const team of rest) {
+      await supabase.from('team_members').update({ team_id: surviving.id }).eq('team_id', team.id)
+      await supabase.from('teams').delete().eq('id', team.id)
+    }
+  }
+
+  statusMessage.textContent = `Merged ${smallTeams.length} small team(s) into ${groups.length} team(s).`
   reload()
 }
 
@@ -162,10 +240,18 @@ teamsContent.addEventListener('click', (e) => {
 })
 
 teamsContent.addEventListener('change', (e) => {
-  const target = e.target.closest('[data-action="toggle-checkin"]')
-  if (!target) return
-  toggleCheckedIn(target.dataset.id, target.checked)
+  const checkinTarget = e.target.closest('[data-action="toggle-checkin"]')
+  if (checkinTarget) {
+    toggleCheckedIn(checkinTarget.dataset.id, checkinTarget.checked)
+    return
+  }
+  const colorTarget = e.target.closest('[data-action="assign-color"]')
+  if (colorTarget) {
+    assignColor(colorTarget.dataset.id, colorTarget.value)
+  }
 })
+
+document.getElementById('auto-merge-button').addEventListener('click', autoMergeSmallTeams)
 
 teamsContent.addEventListener('keydown', (e) => {
   if (e.key !== 'Enter') return

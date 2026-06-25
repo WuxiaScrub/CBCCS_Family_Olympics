@@ -1,4 +1,3 @@
-const MIN_MEMBERS = 5
 const MAX_MEMBERS = 7
 
 const memberInputsContainer = document.getElementById('member-inputs')
@@ -9,7 +8,7 @@ const form = document.getElementById('register-form')
 
 memberInputsContainer.innerHTML = Array.from({ length: MAX_MEMBERS })
   .map((_, i) => {
-    const required = i < MIN_MEMBERS
+    const required = i === 0
     return `
       <label class="field">
         Member ${i + 1}${required ? '' : ' (optional)'}
@@ -28,10 +27,6 @@ form.addEventListener('submit', async (e) => {
     .filter((name) => name !== '')
 
   if (!teamName) return
-  if (memberNames.length < MIN_MEMBERS) {
-    statusMessage.textContent = `Please enter at least ${MIN_MEMBERS} team members.`
-    return
-  }
 
   statusMessage.textContent = 'Registering...'
   form.querySelector('button[type="submit"]').disabled = true
