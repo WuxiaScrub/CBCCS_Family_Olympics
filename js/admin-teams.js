@@ -27,6 +27,16 @@ function render() {
   const takenColors = new Set(teams.filter((t) => t.checked_in && t.color).map((t) => t.color))
   teamsContent.innerHTML = `
     <p class="muted">${checkedInCount} / ${teams.length} teams checked in</p>
+    <div class="color-legend">
+      ${TEAM_COLORS.map(
+        (color) => `
+          <div class="color-legend-item">
+            <span class="color-swatch" style="background-color: ${TEAM_COLOR_HEX[color]}"></span>
+            ${escapeHtml(color)}
+          </div>
+        `,
+      ).join('')}
+    </div>
     <div class="team-grid">
       ${teams
         .map(
@@ -53,15 +63,22 @@ function render() {
                   ? `
                     <label class="field">
                       Color
-                      <select data-action="assign-color" data-id="${team.id}">
-                        <option value="">No color</option>
-                        ${TEAM_COLOR_CODES.filter((code) => code === team.color || !takenColors.has(code))
-                          .map(
-                            (code) =>
-                              `<option value="${code}" ${team.color === code ? 'selected' : ''}>${code}</option>`,
-                          )
-                          .join('')}
-                      </select>
+                      <div class="color-select-row">
+                        ${
+                          team.color
+                            ? `<span class="color-swatch" style="background-color: ${colorCodeHex(team.color)}"></span>`
+                            : ''
+                        }
+                        <select data-action="assign-color" data-id="${team.id}">
+                          <option value="">No color</option>
+                          ${TEAM_COLOR_CODES.filter((code) => code === team.color || !takenColors.has(code))
+                            .map(
+                              (code) =>
+                                `<option value="${code}" ${team.color === code ? 'selected' : ''}>${code}</option>`,
+                            )
+                            .join('')}
+                        </select>
+                      </div>
                     </label>
                   `
                   : ''
