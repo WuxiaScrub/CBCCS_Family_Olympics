@@ -552,8 +552,16 @@ button:hover {
   background: #eef1f9;
 }
 
+.result-trophy-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  white-space: nowrap;
+}
+
 .result-trophy {
   font-size: 1.15em;
+  line-height: 1;
 }
 
 .result-trophy-gold {
@@ -561,11 +569,16 @@ button:hover {
 }
 
 .result-trophy-silver {
-  filter: grayscale(100%) brightness(1.5);
+  filter: grayscale(100%) brightness(1.15) contrast(1.25);
 }
 
 .result-trophy-bronze {
-  filter: sepia(100%) saturate(350%) hue-rotate(350deg) brightness(0.85);
+  filter: sepia(100%) saturate(900%) hue-rotate(330deg) brightness(0.55);
+}
+
+.result-trophy-label {
+  font-size: 0.82em;
+  font-weight: 600;
 }
 
 .result-rank {

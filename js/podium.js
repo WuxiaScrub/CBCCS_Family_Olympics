@@ -53,7 +53,7 @@ function medalCell(place) {
   if (!place) return '—'
   const meta = RANK_META[place]
   if (meta) {
-    return `<span class="result-trophy result-trophy-${meta.className}" title="${meta.label}">🏆</span>`
+    return `<span class="result-trophy-wrap" title="${meta.label}"><span class="result-trophy result-trophy-${meta.className}">🏆</span> <span class="result-trophy-label">${ordinal(place)}</span></span>`
   }
   return `<span class="result-rank">${ordinal(place)}</span>`
 }
