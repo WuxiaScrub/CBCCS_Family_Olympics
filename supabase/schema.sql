@@ -8,20 +8,24 @@ create table teams (
   contact_info text,
   -- Set by an admin once the team has physically arrived on event day.
   checked_in boolean not null default false,
-  -- Color code assigned once a team is checked in (e.g. "Red I"). Cleared
+  -- Color code assigned once a team is checked in (e.g. "Blue I"). Cleared
   -- when a team is unchecked. Update this list to match js/colors.js.
   color text check (
     color is null or color in (
-      'Red I', 'Red II',
-      'Blue I', 'Blue II',
-      'Green I', 'Green II',
-      'Yellow I', 'Yellow II',
-      'Orange I', 'Orange II',
-      'Purple I', 'Purple II',
-      'Pink I', 'Pink II',
-      'Teal I', 'Teal II',
-      'Black I', 'Black II',
-      'White I', 'White II'
+      'Lime Green', 'Lime Green I',
+      'Yellow', 'Yellow I',
+      'Apple Red', 'Apple Red I',
+      'Magenta Red', 'Magenta Red I',
+      'Orange', 'Orange I',
+      'Blue', 'Blue I',
+      'Pink', 'Pink I',
+      'Purple', 'Purple I',
+      'White', 'White I',
+      'Tan', 'Tan I',
+      'Black', 'Black I',
+      'Light Pink', 'Light Pink I',
+      'Silver', 'Silver I',
+      'Gold', 'Gold I'
     )
   ),
   created_at timestamptz not null default now()
