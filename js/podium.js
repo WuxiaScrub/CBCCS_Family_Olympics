@@ -43,10 +43,19 @@ function renderPodium(groups) {
     .join('')
 }
 
-const MEDALS = { 1: '\u{1F947}', 2: '\u{1F948}', 3: '\u{1F949}' }
+function ordinal(n) {
+  const v = n % 100
+  const suffix = (v >= 11 && v <= 13) ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] ?? 'th'
+  return `${n}${suffix}`
+}
 
 function medalCell(place) {
-  return MEDALS[place] ? `<span title="${RANK_META[place].label}">${MEDALS[place]}</span>` : '—'
+  if (!place) return '—'
+  const meta = RANK_META[place]
+  if (meta) {
+    return `<span class="result-trophy result-trophy-${meta.className}" title="${meta.label}">🏆</span>`
+  }
+  return `<span class="result-rank">${ordinal(place)}</span>`
 }
 
 function renderResultsGrid(teams, stations, stationRankings, spiritLeaderboard) {
