@@ -507,7 +507,7 @@ button:hover {
 }
 
 .results-grid-wrap {
-  overflow-x: visible;
+  overflow-x: auto;
   overflow-y: hidden;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
@@ -524,17 +524,23 @@ button:hover {
   text-align: center;
 }
 
-.results-grid th {
-  white-space: normal;
-  word-break: break-word;
-  min-width: 4rem;
-  max-width: 7rem;
-}
+@media (min-width: 640px) {
+  .results-grid th {
+    white-space: normal;
+    word-break: break-word;
+    min-width: 4rem;
+    max-width: 7rem;
+  }
 
-.results-grid th:first-child {
-  white-space: nowrap;
-  min-width: unset;
-  max-width: unset;
+  .results-grid th:first-child {
+    white-space: nowrap;
+    min-width: unset;
+    max-width: unset;
+  }
+
+  .results-grid-wrap {
+    overflow-x: visible;
+  }
 }
 
 .results-grid th:first-child,
