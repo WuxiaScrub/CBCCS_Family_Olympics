@@ -1,16 +1,20 @@
-// Placeholder list of 10 colors (final list TBD). Each color has a "I"/"II"
-// suffix, giving 20 unique color codes that checked-in teams can claim.
+// Each color has no suffix and an "I" suffix, giving 28 unique color codes
+// that checked-in teams can claim.
 // Keep this in sync with the check constraint in supabase/schema.sql.
 const TEAM_COLORS = [
-  'Red',
-  'Blue',
-  'Green',
+  'Lime Green',
   'Yellow',
+  'Apple Red',
+  'Magenta Red',
   'Orange',
-  'Purple',
+  'Blue',
   'Pink',
-  'Teal',
-  'Black',
+  'Purple',
   'White',
+  'Tan',
+  'Black',
+  'Light Pink',
+  'Silver',
+  'Gold',
 ]
-const TEAM_COLOR_CODES = TEAM_COLORS.flatMap((color) => [`${color} I`, `${color} II`])
+const TEAM_COLOR_CODES = TEAM_COLORS.flatMap((color) => [color, `${color} I`])
