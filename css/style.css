@@ -524,18 +524,26 @@ button:hover {
   text-align: center;
 }
 
+/* Wide screens: expand the section to 90 vw and let event headers wrap */
 @media (min-width: 640px) {
+  .podium-results-section {
+    max-width: 90vw;
+  }
+
+  .results-grid {
+    width: 100%;
+    table-layout: fixed;
+  }
+
   .results-grid th {
     white-space: normal;
     word-break: break-word;
-    min-width: 4rem;
-    max-width: 7rem;
+    overflow-wrap: break-word;
   }
 
   .results-grid th:first-child {
     white-space: nowrap;
-    min-width: unset;
-    max-width: unset;
+    width: 10em;
   }
 
   .results-grid-wrap {
