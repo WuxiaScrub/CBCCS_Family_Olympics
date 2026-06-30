@@ -524,30 +524,18 @@ button:hover {
   text-align: center;
 }
 
-/* Wide screens: expand the section to 90 vw and let event headers wrap */
+/* Wide screens: expand the section to 90 vw and let event headers wrap at word boundaries */
 @media (min-width: 640px) {
   .podium-results-section {
     max-width: 90vw;
   }
 
-  .results-grid {
-    width: 100%;
-    table-layout: fixed;
-  }
-
   .results-grid th {
     white-space: normal;
-    word-break: break-word;
-    overflow-wrap: break-word;
   }
 
   .results-grid th:first-child {
     white-space: nowrap;
-    width: 10em;
-  }
-
-  .results-grid-wrap {
-    overflow-x: visible;
   }
 }
 
@@ -562,6 +550,27 @@ button:hover {
 
 .results-grid th:first-child {
   background: #eef1f9;
+}
+
+.result-trophy {
+  font-size: 1.15em;
+}
+
+.result-trophy-gold {
+  filter: drop-shadow(0 1px 2px rgba(180, 130, 0, 0.5));
+}
+
+.result-trophy-silver {
+  filter: grayscale(100%) brightness(1.5);
+}
+
+.result-trophy-bronze {
+  filter: sepia(100%) saturate(350%) hue-rotate(350deg) brightness(0.85);
+}
+
+.result-rank {
+  font-size: 0.82em;
+  color: #777;
 }
 
 .podium-results-title {
