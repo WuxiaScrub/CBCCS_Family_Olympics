@@ -524,6 +524,25 @@ button:hover {
   text-align: center;
 }
 
+@media (min-width: 640px) {
+  .results-grid th {
+    white-space: normal;
+    word-break: break-word;
+    min-width: 4rem;
+    max-width: 7rem;
+  }
+
+  .results-grid th:first-child {
+    white-space: nowrap;
+    min-width: unset;
+    max-width: unset;
+  }
+
+  .results-grid-wrap {
+    overflow-x: visible;
+  }
+}
+
 .results-grid th:first-child,
 .results-grid td:first-child {
   text-align: left;
