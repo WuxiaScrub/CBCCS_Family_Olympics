@@ -154,8 +154,12 @@ async function assignColor(id, color) {
   const { error } = await supabase.from('teams').update({ color: color || null }).eq('id', id)
   if (error) {
     statusMessage.textContent = `Error: ${error.message}`
+    reload()
+    return
   }
-  reload()
+  const team = teams.find((t) => t.id === id)
+  if (team) team.color = color || null
+  render()
 }
 
 async function autoMergeSmallTeams() {
