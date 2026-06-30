@@ -228,6 +228,22 @@ async function addMember(teamId) {
   reload()
 }
 
+function previewSwatch(selectEl, colorCode) {
+  const row = selectEl.closest('.color-select-row')
+  if (!row) return
+  let swatch = row.querySelector('.color-swatch')
+  if (colorCode) {
+    if (!swatch) {
+      swatch = document.createElement('span')
+      swatch.className = 'color-swatch'
+      row.insertBefore(swatch, selectEl)
+    }
+    swatch.style.backgroundColor = colorCodeHex(colorCode)
+  } else {
+    swatch?.remove()
+  }
+}
+
 document.getElementById('add-team-form').addEventListener('submit', async (e) => {
   e.preventDefault()
   const input = document.getElementById('new-team-name')
@@ -267,6 +283,7 @@ teamsContent.addEventListener('change', (e) => {
   }
   const colorTarget = e.target.closest('[data-action="assign-color"]')
   if (colorTarget) {
+    previewSwatch(colorTarget, colorTarget.value)
     assignColor(colorTarget.dataset.id, colorTarget.value)
   }
 })
